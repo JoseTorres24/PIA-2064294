@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotaService {
-
   private notes: any[] = [];
 
-  constructor() { }
+  constructor() {}
 
   addNote(note: any) {
     this.notes.push(note);
@@ -20,8 +19,7 @@ export class NotaService {
   deleteNote(index: number) {
     this.notes.splice(index, 1);
   }
-
-
-
-
 }
+
+
+

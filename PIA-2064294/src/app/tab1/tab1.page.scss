@@ -1,14 +1,17 @@
 ion-card {
-    height: 200px; // Ajusta según el tamaño deseado
-    width: 100%;
-    text-align: center;
-    color: white; // Asegúrate de que el texto contraste con el fondo
-  }
-  
-  .note-image {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    margin-top: 10px;
-  }
-  
+  transition: all 0.3s ease; /* Efecto de transición para un toque más suave */
+}
+
+ion-card:hover {
+  transform: scale(1.05); /* Efecto de ampliación al pasar el ratón */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+}
+
+ion-card-header {
+  padding-top: 10px;
+}
+
+ion-card-content {
+  padding-left: 10px;
+  padding-right: 10px;
+}

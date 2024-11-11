@@ -11,13 +11,13 @@ import { NoteDetailComponent } from '../note-detail/note-detail.component';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [NoteDetailComponent,IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, NgFor, NgIf, NgStyle],
+  imports: [NoteDetailComponent, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, NgFor, NgIf, NgStyle],
 })
 export class Tab1Page implements OnInit {
   notes: any[] = [];
 
   constructor(private noteService: NotaService, private modalCtrl: ModalController) {
-    addIcons({trashOutline});
+    addIcons({ trashOutline });
   }
 
   ngOnInit() {
@@ -34,6 +34,8 @@ export class Tab1Page implements OnInit {
 
   deleteNote(index: number) {
     this.noteService.deleteNote(index);
-    this.notes = this.noteService.getNotes(); // Actualiza la lista después de eliminar
+    this.notes.splice(index, 1); // Elimina directamente el elemento de la lista
   }
+
+  
 }
