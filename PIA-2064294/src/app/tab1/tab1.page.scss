@@ -1,0 +1,14 @@
+ion-card {
+    height: 200px; // Ajusta según el tamaño deseado
+    width: 100%;
+    text-align: center;
+    color: white; // Asegúrate de que el texto contraste con el fondo
+  }
+  
+  .note-image {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    margin-top: 10px;
+  }
+  

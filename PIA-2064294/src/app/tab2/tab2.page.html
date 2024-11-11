@@ -5,12 +5,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Agregar Tarea/Apunte</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <ion-card>
     <ion-card-header>
       <ion-card-title>Crear Nueva Nota</ion-card-title>
@@ -34,6 +28,20 @@
         <ion-item>
           <ion-label>Subir Imagen</ion-label>
           <ion-input type="file" (change)="onFileSelected($event)" accept="image/*"></ion-input>
+        </ion-item>
+
+        <!-- Campo para seleccionar color -->
+        <ion-item>
+          <ion-label>Color de la Nota</ion-label>
+          <ion-select formControlName="color" interface="popover" placeholder="Seleccionar color">
+            <ion-select-option value="#ffadad">Rojo</ion-select-option>
+            <ion-select-option value="#ffd6a5">Naranja</ion-select-option>
+            <ion-select-option value="#fdffb6">Amarillo</ion-select-option>
+            <ion-select-option value="#caffbf">Verde</ion-select-option>
+            <ion-select-option value="#9bf6ff">Azul</ion-select-option>
+            <ion-select-option value="#a0c4ff">Indigo</ion-select-option>
+            <ion-select-option value="#bdb2ff">Violeta</ion-select-option>
+          </ion-select>
         </ion-item>
 
         <!-- Previsualización de la imagen cargada -->

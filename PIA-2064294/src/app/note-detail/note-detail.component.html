@@ -1,0 +1,22 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Detalles de la Nota</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ note?.title }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ note?.description }}</p>
+      <img *ngIf="note?.image" [src]="note.image" alt="Imagen de la nota" style="width: 100%; height: auto; margin-top: 10px;">
+    </ion-card-content>
+    <!-- Botón para cerrar -->
+    <ion-button expand="block" color="primary" (click)="close()">Cerrar</ion-button>
+  </ion-card>
+</ion-content>
