@@ -1,7 +1,7 @@
 import { Component, EnvironmentInjector, inject } from '@angular/core';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { triangle, ellipse, square, fileTrayStackedOutline, duplicateOutline, person, personOutline } from 'ionicons/icons';
+import { fileTrayStackedOutline, duplicateOutline, personOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tabs',

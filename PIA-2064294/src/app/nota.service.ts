@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
+import { Note } from './Interfaces/note';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotaService {
-  private notes: any[] = [];
+  private notes: Note[] = [];
 
   constructor() {}
 
-  addNote(note: any) {
+  addNote(note: Note) {
     this.notes.push(note);
+    console.log('Nota añadida:', note);  // Verifica que el color esté presente en la salida de la consola
   }
 
-  getNotes() {
+  getNotes(): Note[] {
     return this.notes;
   }
 
@@ -20,6 +22,4 @@ export class NotaService {
     this.notes.splice(index, 1);
   }
 }
-
-
 

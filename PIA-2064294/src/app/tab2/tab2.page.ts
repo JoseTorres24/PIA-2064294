@@ -1,15 +1,22 @@
+// tab2.page.ts
+
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonTextarea, IonTitle, IonToolbar, IonSelectOption } from '@ionic/angular/standalone';
+import { IonicModule } from '@ionic/angular'; // Importa IonicModule que incluye todos los componentes
 import { CommonModule } from '@angular/common';
 import { NotaService } from '../nota.service';
+import { Note } from '../Interfaces/note';
 
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   standalone: true,
-  imports: [IonSelectOption, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonInput, IonItem, IonLabel, CommonModule, ReactiveFormsModule, IonTextarea, IonTitle, IonToolbar],
+  imports: [
+    IonicModule, // Importa solo IonicModule para evitar duplicados
+    CommonModule,
+    ReactiveFormsModule,
+  ],
 })
 export class Tab2Page {
   noteForm: FormGroup;
@@ -20,7 +27,7 @@ export class Tab2Page {
       title: ['', Validators.required],
       description: ['', Validators.required],
       image: [null],
-      color: ['#ffffff'], // Color por defecto
+      color: ['#ffffff'],
     });
   }
 
@@ -39,10 +46,10 @@ export class Tab2Page {
 
   saveNote() {
     if (this.noteForm.valid) {
-      const noteData = this.noteForm.value;
-      this.noteService.addNote(noteData); // Guardamos la nota en el servicio
+      const noteData: Note = this.noteForm.value; 
+      this.noteService.addNote(noteData);
       console.log('Nota guardada:', noteData);
-      this.noteForm.reset();
+      this.noteForm.reset({ color: '#ffffff' });
       this.selectedImage = null;
     }
   }
