@@ -1,3 +1,55 @@
-<p>
-  crear-cuenta works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Crear Cuenta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Crear una Nueva Cuenta</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Campo para el Username -->
+        <ion-item>
+          <ion-label position="floating">Username</ion-label>
+          <ion-input formControlName="username" type="text" required></ion-input>
+        </ion-item>
+
+        <!-- Campo para el Correo -->
+        <ion-item>
+          <ion-label position="floating">Correo</ion-label>
+          <ion-input formControlName="email" type="email" required></ion-input>
+        </ion-item>
+
+        <!-- Campo para la Contraseña -->
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input formControlName="password" type="password" required></ion-input>
+        </ion-item>
+
+        <!-- Campo para la Edad -->
+        <ion-item>
+          <ion-label position="floating">Edad</ion-label>
+          <ion-input formControlName="age" type="number" min="1" required></ion-input>
+        </ion-item>
+
+        <!-- Campo para subir la Foto de Perfil -->
+        <ion-item>
+          <ion-label>Foto de Perfil</ion-label>
+          <ion-input type="file" (change)="onFileSelected($event)" accept="image/*" /></ion-input>
+        </ion-item>
+
+        <!-- Previsualización de la Foto de Perfil -->
+        <div *ngIf="selectedProfileImage" style="text-align: center; margin-top: 10px;">
+          <img [src]="selectedProfileImage" alt="Foto de perfil seleccionada" style="width: 100px; height: 100px; border-radius: 50%;">
+        </div>
+
+        <!-- Botón para crear la cuenta -->
+        <ion-button expand="block" type="submit" [disabled]="!registerForm.valid">Crear Cuenta</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
