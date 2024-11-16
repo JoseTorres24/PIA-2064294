@@ -4,19 +4,25 @@ import { User } from '../Interfaces/user'; // Asegúrate de que esta interfaz ex
 import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-crear-cuenta',
   templateUrl: './crear-cuenta.component.html',
   styleUrls: ['./crear-cuenta.component.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule,NgIf],
+  imports: [IonicModule, ReactiveFormsModule, NgIf],
 })
 export class CrearCuentaComponent implements OnInit {
   registerForm!: FormGroup;
   selectedProfileImage: string | ArrayBuffer | null = null;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private navCtrl: NavController // Servicio para navegar hacia atrás
+  ) {}
 
   ngOnInit() {
     this.registerForm = this.fb.group({
@@ -74,5 +80,10 @@ export class CrearCuentaComponent implements OnInit {
       this.registerForm.reset();
       this.selectedProfileImage = null;
     }
+  }
+
+  // Método para regresar a la pantalla anterior
+  goBack() {
+    this.navCtrl.back(); // Regresa a la pantalla anterior en la pila de navegación
   }
 }

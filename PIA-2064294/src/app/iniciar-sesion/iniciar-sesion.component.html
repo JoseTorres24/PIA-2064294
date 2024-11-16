@@ -1,5 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- Botón para Volver -->
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+        Volver
+      </ion-button>
+    </ion-buttons>
     <ion-title>Iniciar Sesión</ion-title>
   </ion-toolbar>
 </ion-header>

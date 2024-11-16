@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-iniciar-sesion',
@@ -13,7 +14,7 @@ import { Router } from '@angular/router';
 export class IniciarSesionComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router,private navCtrl: NavController) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -32,5 +33,8 @@ export class IniciarSesionComponent {
     } else {
       console.error('Formulario inválido');
     }
+  }
+  goBack() {
+    this.navCtrl.back(); // Regresa a la pantalla anterior en la pila de navegación
   }
 }
