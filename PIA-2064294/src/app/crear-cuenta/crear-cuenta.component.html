@@ -33,18 +33,20 @@
         <!-- Campo para la Edad -->
         <ion-item>
           <ion-label position="floating">Edad</ion-label>
-          <ion-input formControlName="age" type="number" min="1" required></ion-input>
+          <ion-input formControlName="age" type="number" required></ion-input>
         </ion-item>
 
         <!-- Campo para subir la Foto de Perfil -->
         <ion-item>
           <ion-label>Foto de Perfil</ion-label>
-          <ion-input type="file" (change)="onFileSelected($event)" accept="image/*" /></ion-input>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" style="width: 100%; padding: 10px;" />
         </ion-item>
 
         <!-- Previsualización de la Foto de Perfil -->
         <div *ngIf="selectedProfileImage" style="text-align: center; margin-top: 10px;">
-          <img [src]="selectedProfileImage" alt="Foto de perfil seleccionada" style="width: 100px; height: 100px; border-radius: 50%;">
+          <img [src]="selectedProfileImage" alt="Foto de perfil seleccionada" 
+               style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" />
+          <ion-button color="danger" (click)="removeSelectedImage()">Eliminar</ion-button>
         </div>
 
         <!-- Botón para crear la cuenta -->

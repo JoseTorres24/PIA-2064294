@@ -2,7 +2,54 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: 'inicio',
+    loadComponent: () =>
+      import('./inicio/inicio.component').then((m) => m.InicioComponent),
+  },
+  {
+    path: 'crear-cuenta',
+    loadComponent: () =>
+      import('./crear-cuenta/crear-cuenta.component').then(
+        (m) => m.CrearCuentaComponent
+      ),
+  },
+  {
+    path: 'iniciar-sesion',
+    loadComponent: () =>
+      import('./iniciar-sesion/iniciar-sesion.component').then(
+        (m) => m.IniciarSesionComponent
+      ),
+  },
+  {
+    path: 'tabs',
+    loadComponent: () =>
+      import('./tabs/tabs.page').then((m) => m.TabsPage),
+    children: [
+      {
+        path: 'tab1',
+        loadComponent: () =>
+          import('./tab1/tab1.page').then((m) => m.Tab1Page),
+      },
+      {
+        path: 'tab2',
+        loadComponent: () =>
+          import('./tab2/tab2.page').then((m) => m.Tab2Page),
+      },
+      {
+          path:'tab3',
+          loadComponent: () =>
+            import('./tab3/tab3.page').then((m) => m.Tab3Page),
+      },
+      {
+        path: '',
+        redirectTo: 'tab1',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
     path: '',
-    loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
+    redirectTo: 'inicio',
+    pathMatch: 'full',
   },
 ];

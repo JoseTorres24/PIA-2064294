@@ -1,3 +1,22 @@
-<p>
-  inicio works!
-</p>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>AppTusNotas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="container">
+    <h1>Bienvenido a AppTusNotas</h1>
+    <p>Organiza tus notas de manera simple y eficiente.</p>
+
+    <!-- Botón para ir a Iniciar Sesión -->
+    <ion-button expand="block" color="primary" (click)="irAIniciarSesion()">
+      Iniciar Sesión
+    </ion-button>
+
+    <!-- Botón para ir a Crear Cuenta -->
+    <ion-button expand="block" color="secondary" (click)="irACrearCuenta()">
+      Crear Cuenta
+    </ion-button>
+  </div>
+</ion-content>

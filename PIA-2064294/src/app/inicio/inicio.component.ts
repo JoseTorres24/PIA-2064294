@@ -1,14 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-inicio',
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.scss'],
+  standalone: true,
+  imports:[IonicModule],
 })
-export class InicioComponent  implements OnInit {
+export class InicioComponent {
+  constructor(private router: Router) {}
 
-  constructor() { }
+  // Navega a la pantalla de Iniciar Sesión
+  irAIniciarSesion() {
+    this.router.navigate(['/iniciar-sesion']);
+  }
 
-  ngOnInit() {}
-
+  // Navega a la pantalla de Crear Cuenta
+  irACrearCuenta() {
+    this.router.navigate(['/crear-cuenta']);
+  }
 }
