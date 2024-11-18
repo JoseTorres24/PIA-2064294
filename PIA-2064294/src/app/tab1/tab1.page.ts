@@ -5,7 +5,7 @@ import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { trashOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons/';
 import { NoteDetailComponent } from '../note-detail/note-detail.component';
-import { Note } from '../Interfaces/note'; // Importa la interfaz
+import { Note } from '../Interfaces/note';
 
 @Component({
   selector: 'app-tab1',
@@ -19,7 +19,8 @@ import { Note } from '../Interfaces/note'; // Importa la interfaz
   ],
 })
 export class Tab1Page implements OnInit {
-  notes: Note[] = [];  // Usa la interfaz para definir el tipo
+  notes: Note[] = [];  // Lista local para las notas
+  notes$ = this.noteService.notes$; // Suscripción al observable
 
   constructor(private noteService: NotaService, private modalCtrl: ModalController) {
     addIcons({ trashOutline });
@@ -27,29 +28,33 @@ export class Tab1Page implements OnInit {
 
   async ngOnInit() {
     try {
-      this.notes = await this.noteService.getNotes();
-      console.log('Notas cargadas en Tab1:', this.notes); // Verifica que las notas lleguen correctamente
+      this.noteService.notes$.subscribe(updatedNotes => {
+        this.notes = updatedNotes; // Actualiza la lista local con los cambios en el servicio
+      });
+      await this.noteService.loadNotes(); // Carga inicial de las notas
     } catch (error) {
       console.error('Error al cargar notas:', error);
     }
   }
   
-  async openNoteDetail(note: Note) {  // Usa la interfaz para definir el tipo de parámetro
+  
+  async openNoteDetail(note: Note) {
     const modal = await this.modalCtrl.create({
       component: NoteDetailComponent,
-      componentProps: { note }, // Pasa la nota seleccionada al componente de detalle
+      componentProps: { note },
     });
     return await modal.present();
   }
 
   deleteNote(index: number) {
-    const noteID = this.notes[index].noteId; // Obtén el ID de la nota
-    this.noteService.deleteNote(noteID) // Pasa el ID a deleteNote
+    const noteID = this.notes[index].noteId;
+    this.noteService.deleteNote(noteID)
       .then(() => {
-        this.notes.splice(index, 1); // Elimina la nota de la lista local solo si Firestore tuvo éxito
+        this.notes.splice(index, 1);
       })
       .catch(error => {
         console.error('Error al eliminar la nota:', error);
       });
   }
 }
+

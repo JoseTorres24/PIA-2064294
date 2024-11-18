@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from '@angular/fire/auth';
 import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
-import { User } from '../Interfaces/user';
+import { User as FirebaseUser } from 'firebase/auth'; // Tipo de usuario de Firebase
+import { User } from '../Interfaces/user'; // Tu tipo personalizado
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,27 @@ import { User } from '../Interfaces/user';
 export class AuthService {
   currentUser: User | null = null;
 
-  constructor(private auth: Auth, private firestore: Firestore) {}
+  constructor(private auth: Auth, private firestore: Firestore) {
+    onAuthStateChanged(this.auth, async (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        // Si hay un usuario de Firebase, obtener los datos adicionales de Firestore
+        const userDoc = await getDoc(doc(this.firestore, 'users', firebaseUser.uid));
+        if (userDoc.exists()) {
+          // Puedes asignar las propiedades adicionales a un objeto de tipo User
+          const firestoreUser = userDoc.data() as User;
+          this.currentUser = {
+            ...firestoreUser,
+            uid: firebaseUser.uid, // Asegúrate de agregar el UID de Firebase
+            email: firebaseUser.email || '', // Puedes agregar el email si lo deseas
+          };
+        } else {
+          this.currentUser = null; // No se encontraron datos del usuario en Firestore
+        }
+      } else {
+        this.currentUser = null; // No hay usuario autenticado
+      }
+    });
+  }
 
   // Registrar usuario y guardar datos adicionales
   async register(userData: User): Promise<void> {
@@ -17,17 +38,16 @@ export class AuthService {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-      const uid = userCredential.user.uid;// y esto lo dejamos?
+      const uid = userCredential.user.uid;
 
-      // Guardar datos adicionales en Firestore usando el UID
+      // Guardar datos adicionales en Firestore
       const { uid: _, ...otherDataWithoutUid } = otherData;
 
       await setDoc(doc(this.firestore, 'users', uid), {
-        uid, // Se asigna explícitamente
+        uid, // Asigna UID explícitamente
         email,
-      ...otherDataWithoutUid, // Sin el campo uid
+        ...otherDataWithoutUid, // Otros datos sin el UID
       });
-
 
       console.log('Usuario registrado:', userCredential.user);
     } catch (error) {
@@ -42,7 +62,7 @@ export class AuthService {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       const uid = userCredential.user.uid;
 
-      // Obtener datos del usuario usando el UID
+      // Obtener los datos del usuario desde Firestore utilizando el UID
       const userDoc = await getDoc(doc(this.firestore, 'users', uid));
       if (userDoc.exists()) {
         this.currentUser = userDoc.data() as User;
@@ -72,6 +92,7 @@ export class AuthService {
 
   // Obtener el usuario actual
   getCurrentUser(): User | null {
-    return this.currentUser;
+    return this.currentUser; // Retorna el usuario almacenado en `currentUser`
   }
 }
+
