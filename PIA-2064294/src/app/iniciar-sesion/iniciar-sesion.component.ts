@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular/standalone';
-
+import { IonicModule } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 @Component({
   selector: 'app-iniciar-sesion',
   templateUrl: './iniciar-sesion.component.html',
@@ -14,22 +14,32 @@ import { NavController } from '@ionic/angular/standalone';
 export class IniciarSesionComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router,private navCtrl: NavController) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private navCtrl: NavController
+    
+  ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]], // Campo de email con validación
+      password: ['', Validators.required], // Campo de contraseña requerido
     });
   }
 
   onLogin() {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
+      const { email, password } = this.loginForm.value;
 
-      // Lógica para comprobar las credenciales (simulada)
-      console.log('Intentando iniciar sesión con:', { username, password });
-
-      // Redirige al componente de Tabs
-      this.router.navigate(['/tabs']);
+      this.authService
+        .login(email, password)
+        .then((user) => {
+          console.log('Inicio de sesión exitoso:', user);
+          this.router.navigate(['/tabs']); // Redirige al componente principal
+        })
+        .catch((error) => {
+          console.error('Error al iniciar sesión:', error);
+        });
     } else {
       console.error('Formulario inválido');
     }
@@ -38,3 +48,4 @@ export class IniciarSesionComponent {
     this.navCtrl.back(); // Regresa a la pantalla anterior en la pila de navegación
   }
 }
+

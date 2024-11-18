@@ -8,34 +8,29 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="6" size-lg="4" *ngFor="let note of notes; let i = index">
-        
-        <!-- Tarjeta de nota con estilo compacto y atractivo -->
         <ion-card 
           [ngStyle]="{ 
             'background-color': note.color,
-            'height': '120px', 
-            'border-radius': '12px', 
-            'box-shadow': '0 2px 10px rgba(0, 0, 0, 0.1)', 
+            'height': '120px',
+            'border-radius': '12px',
+            'box-shadow': '0 2px 10px rgba(0, 0, 0, 0.1)',
             'overflow': 'hidden'
-          }" 
+          }"
           (click)="openNoteDetail(note)"
           style="cursor: pointer;"
         >
           <ion-card-header style="padding-bottom: 0;">
-            <!-- Título con color dinámico según el color de fondo -->
             <ion-card-title 
               style="font-size: 1rem; font-weight: bold;">
               {{ note.title }}
             </ion-card-title>
           </ion-card-header>
           
-          <!-- Contenido de la nota -->
           <ion-card-content 
             style="font-size: 0.85rem; max-height: 50px; overflow: hidden;">
             <p>{{ note.description }}</p>
           </ion-card-content>
-
-          <!-- Botón para eliminar nota -->
+    
           <ion-button 
             color="danger" 
             fill="clear" 
@@ -46,8 +41,8 @@
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>
         </ion-card>
-        
       </ion-col>
     </ion-row>
+    
   </ion-grid>
 </ion-content>

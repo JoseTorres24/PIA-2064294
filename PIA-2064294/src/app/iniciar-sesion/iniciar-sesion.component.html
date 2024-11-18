@@ -18,10 +18,10 @@
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <!-- Campo para el Username -->
+        <!-- Campo para el email -->
         <ion-item>
-          <ion-label position="floating">Username</ion-label>
-          <ion-input formControlName="username" type="text" required></ion-input>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input formControlName="email" type="text" required></ion-input>
         </ion-item>
 
         <!-- Campo para la Contraseña -->

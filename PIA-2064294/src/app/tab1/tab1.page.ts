@@ -12,7 +12,11 @@ import { Note } from '../Interfaces/note'; // Importa la interfaz
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [NoteDetailComponent, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, NgFor, NgIf, NgStyle],
+  imports: [
+    NoteDetailComponent, IonHeader, IonToolbar, IonTitle, IonContent, 
+    IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, 
+    IonCardContent, IonButton, IonIcon, NgFor, NgIf, NgStyle
+  ],
 })
 export class Tab1Page implements OnInit {
   notes: Note[] = [];  // Usa la interfaz para definir el tipo
@@ -21,10 +25,15 @@ export class Tab1Page implements OnInit {
     addIcons({ trashOutline });
   }
 
-  ngOnInit() {
-    this.notes = this.noteService.getNotes();
+  async ngOnInit() {
+    try {
+      this.notes = await this.noteService.getNotes();
+      console.log('Notas cargadas en Tab1:', this.notes); // Verifica que las notas lleguen correctamente
+    } catch (error) {
+      console.error('Error al cargar notas:', error);
+    }
   }
-
+  
   async openNoteDetail(note: Note) {  // Usa la interfaz para definir el tipo de parámetro
     const modal = await this.modalCtrl.create({
       component: NoteDetailComponent,
@@ -34,7 +43,13 @@ export class Tab1Page implements OnInit {
   }
 
   deleteNote(index: number) {
-    this.noteService.deleteNote(index);
-    this.notes.splice(index, 1); // Elimina directamente el elemento de la lista
+    const noteID = this.notes[index].noteId; // Obtén el ID de la nota
+    this.noteService.deleteNote(noteID) // Pasa el ID a deleteNote
+      .then(() => {
+        this.notes.splice(index, 1); // Elimina la nota de la lista local solo si Firestore tuvo éxito
+      })
+      .catch(error => {
+        console.error('Error al eliminar la nota:', error);
+      });
   }
 }

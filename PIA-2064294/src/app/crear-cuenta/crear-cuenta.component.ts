@@ -1,27 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { User } from '../Interfaces/user'; // Asegúrate de que esta interfaz exista
-import { IonicModule } from '@ionic/angular';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { User } from '../Interfaces/user';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-crear-cuenta',
   templateUrl: './crear-cuenta.component.html',
   styleUrls: ['./crear-cuenta.component.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule, NgIf],
+ imports:[NgIf,IonicModule, ReactiveFormsModule]
 })
 export class CrearCuentaComponent implements OnInit {
   registerForm!: FormGroup;
-  selectedProfileImage: string | ArrayBuffer | null = null;
+  selectedProfileImage: string | ArrayBuffer | null = null; // Imagen de perfil seleccionada
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private router: Router,
-    private navCtrl: NavController // Servicio para navegar hacia atrás
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -30,10 +31,11 @@ export class CrearCuentaComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       age: ['', [Validators.required, Validators.min(1)]],
-      profileImage: [null], // Campo para la imagen de perfil
+      profileImage: [null], // Campo opcional para la imagen de perfil
     });
   }
 
+  // Manejo de selección de archivos para imagen de perfil
   onFileSelected(event: Event) {
     if (
       event.target instanceof HTMLInputElement &&
@@ -41,8 +43,8 @@ export class CrearCuentaComponent implements OnInit {
       event.target.files.length > 0
     ) {
       const file = event.target.files[0];
-      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']; // Tipos de imágenes válidos
-      const maxFileSize = 5 * 1024 * 1024; // 5 MB
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']; // Tipos válidos
+      const maxFileSize = 5 * 1024 * 1024; // Tamaño máximo de archivo (5 MB)
 
       if (!validImageTypes.includes(file.type)) {
         console.error('Solo se permiten imágenes en formatos JPEG, PNG o GIF.');
@@ -56,34 +58,37 @@ export class CrearCuentaComponent implements OnInit {
 
       const reader = new FileReader();
       reader.onload = () => {
-        this.selectedProfileImage = reader.result;
-        this.registerForm.patchValue({ profileImage: reader.result });
+        this.selectedProfileImage = reader.result; // Guardar la imagen para vista previa
+        this.registerForm.patchValue({ profileImage: reader.result }); // Actualizar el formulario
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // Leer la imagen como Base64
     }
   }
 
+  // Quitar la imagen seleccionada
   removeSelectedImage() {
     this.selectedProfileImage = null;
-    this.registerForm.patchValue({ profileImage: null });
+    this.registerForm.patchValue({ profileImage: null }); // Resetear el valor del campo en el formulario
   }
 
+  // Método para enviar el formulario
   onSubmit() {
     if (this.registerForm.valid) {
-      const userData: User = this.registerForm.value as User; // Tipado con la interfaz
-      console.log('Datos del usuario:', userData);
+      const userData: User = this.registerForm.value as User;
 
-      // Aquí podrías enviar los datos a un servicio o realizar más acciones
-      // Por ejemplo: this.userService.register(userData).subscribe(...);
-
-      // Limpiar el formulario y la imagen seleccionada
-      this.registerForm.reset();
-      this.selectedProfileImage = null;
+      this.authService
+        .register(userData)
+        .then(() => {
+          console.log('Registro exitoso');
+          this.router.navigate(['/iniciar-sesion']); // Redirige a iniciar sesión
+        })
+        .catch((error) => {
+          console.error('Error en el registro:', error);
+        });
     }
   }
-
-  // Método para regresar a la pantalla anterior
   goBack() {
     this.navCtrl.back(); // Regresa a la pantalla anterior en la pila de navegación
   }
+  
 }
