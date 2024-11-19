@@ -28,14 +28,18 @@ export class Tab1Page implements OnInit {
 
   async ngOnInit() {
     try {
+      // Suscríbete al BehaviorSubject para mantener la lista local sincronizada
       this.noteService.notes$.subscribe(updatedNotes => {
-        this.notes = updatedNotes; // Actualiza la lista local con los cambios en el servicio
+        this.notes = updatedNotes; // Actualiza la lista local
       });
-      await this.noteService.loadNotes(); // Carga inicial de las notas
+  
+      // Carga inicial de las notas desde Firestore
+      await this.noteService.loadNotes();
     } catch (error) {
       console.error('Error al cargar notas:', error);
     }
   }
+  
   
   
   async openNoteDetail(note: Note) {
@@ -47,14 +51,20 @@ export class Tab1Page implements OnInit {
   }
 
   deleteNote(index: number) {
-    const noteID = this.notes[index].noteId;
+    const noteID = this.notes[index].noteId; // Obtener el ID de la nota desde la lista local
+  
     this.noteService.deleteNote(noteID)
       .then(() => {
-        this.notes.splice(index, 1);
+        console.log(`Nota ${noteID} eliminada`);
+        // Ya no es necesario actualizar 'notes' manualmente, 
+        // ya que el servicio lo hace mediante el BehaviorSubject
       })
       .catch(error => {
         console.error('Error al eliminar la nota:', error);
       });
   }
+  
+  
 }
 
+//
