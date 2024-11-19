@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
 import { NgIf } from '@angular/common';
+import { FotoServiceService } from '../foto-service.service';
 
 @Component({
   selector: 'app-crear-cuenta',
@@ -22,7 +23,8 @@ export class CrearCuentaComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private fotoService: FotoServiceService 
   ) {}
 
   ngOnInit() {
@@ -35,6 +37,20 @@ export class CrearCuentaComponent implements OnInit {
     });
   }
 
+  async takePhoto() {
+    try {
+      // Llamamos a addNewToGallery pasando el argumento 'false' para isProfileImage,
+      // ya que no es una imagen de perfil, y el objeto note que es opcional.
+      await this.fotoService.addNewToGallery(true); // Asume que no es una imagen de perfil.
+  
+      // Asigna la foto capturada al formulario
+      this.selectedProfileImage = this.fotoService.photos[0].webviewPath || null;  // Si es undefined, asigna null.
+ // Accede a la primera foto
+      this.registerForm.patchValue({ profileImage: this.selectedProfileImage });  // Actualiza el formulario con la imagen
+    } catch (error) {
+      console.error('Error al tomar la foto', error);
+    }
+  }
   // Manejo de selección de archivos para imagen de perfil
   onFileSelected(event: Event) {
     if (
