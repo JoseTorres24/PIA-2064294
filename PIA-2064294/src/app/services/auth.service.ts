@@ -1,37 +1,38 @@
-//auth.service.ts
 import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from '@angular/fire/auth';
 import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
 import { User as FirebaseUser } from 'firebase/auth'; // Tipo de usuario de Firebase
 import { User } from '../Interfaces/user'; // Tu tipo personalizado
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs'; // Importamos BehaviorSubject y Observable
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  currentUser: User | null = null;
+  private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable(); // Observable para acceder al estado del usuario
 
   constructor(private auth: Auth, private firestore: Firestore, private router: Router) {
+    // Observamos el cambio en el estado de autenticación
     onAuthStateChanged(this.auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
         const userDoc = await getDoc(doc(this.firestore, 'users', firebaseUser.uid));
         if (userDoc.exists()) {
           const firestoreUser = userDoc.data() as User;
-          this.currentUser = {
+          this.currentUserSubject.next({
             ...firestoreUser,
             uid: firebaseUser.uid,
             email: firebaseUser.email || '',
-          };
+          });
         } else {
-          this.currentUser = null;
+          this.currentUserSubject.next(null); // Si no existe el usuario en Firestore
         }
       } else {
-        this.currentUser = null;
+        this.currentUserSubject.next(null); // Si el usuario no está autenticado
       }
     });
   }
-  
 
   // Registrar usuario y guardar datos adicionales
   async register(userData: User): Promise<void> {
@@ -62,15 +63,16 @@ export class AuthService {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       const uid = userCredential.user.uid;
-  
+
       const userDoc = await getDoc(doc(this.firestore, 'users', uid));
       if (userDoc.exists()) {
-        this.currentUser = userDoc.data() as User;
-        console.log('Usuario autenticado:', this.currentUser);
-  
+        const loggedInUser = userDoc.data() as User;
+        this.currentUserSubject.next(loggedInUser); // Actualiza el estado del usuario
+        console.log('Usuario autenticado:', loggedInUser);
+
         // Redirigir al usuario a los tabs y limpiar el historial
         this.router.navigateByUrl('/tabs', { replaceUrl: true });
-        return this.currentUser;
+        return loggedInUser;
       } else {
         console.error('No se encontraron datos del usuario.');
         return null;
@@ -85,7 +87,7 @@ export class AuthService {
   async logout(): Promise<void> {
     try {
       await signOut(this.auth);
-      this.currentUser = null;
+      this.currentUserSubject.next(null); // Limpiar el estado del usuario
       console.log('Sesión cerrada');
   
       // Redirigir al inicio de sesión y limpiar historial
@@ -95,11 +97,9 @@ export class AuthService {
       throw error;
     }
   }
-  
 
-  // Obtener el usuario actual
+  // Obtener el usuario actual (puedes seguir usando esta función si la necesitas)
   getCurrentUser(): User | null {
-    return this.currentUser; // Retorna el usuario almacenado en `currentUser`
+    return this.currentUserSubject.value; // Retorna el valor actual del usuario
   }
 }
-

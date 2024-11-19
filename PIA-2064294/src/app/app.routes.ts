@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './services/auth.guard';
+import { PublicGuard } from './services/public.guard'; // Asegúrate de importar el PublicGuard
 
 export const routes: Routes = [
   {
     path: 'inicio',
     loadComponent: () =>
       import('./inicio/inicio.component').then((m) => m.InicioComponent),
+    canActivate: [PublicGuard], // Protege la ruta pública
   },
   {
     path: 'crear-cuenta',
@@ -13,6 +15,7 @@ export const routes: Routes = [
       import('./crear-cuenta/crear-cuenta.component').then(
         (m) => m.CrearCuentaComponent
       ),
+    canActivate: [PublicGuard], // Protege la ruta pública
   },
   {
     path: 'iniciar-sesion',
@@ -20,12 +23,13 @@ export const routes: Routes = [
       import('./iniciar-sesion/iniciar-sesion.component').then(
         (m) => m.IniciarSesionComponent
       ),
+    canActivate: [PublicGuard], // Protege la ruta pública
   },
   {
     path: 'tabs',
     loadComponent: () =>
       import('./tabs/tabs.page').then((m) => m.TabsPage),
-    canActivate: [AuthGuard], // Protege esta ruta
+    canActivate: [AuthGuard], // Protege esta ruta privada
     children: [
       {
         path: 'tab1',
