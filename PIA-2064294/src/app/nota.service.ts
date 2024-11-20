@@ -15,6 +15,11 @@ export class NotaService {
   constructor(private firestore: Firestore, private authService: AuthService) {}
 
   // Cargar las notas iniciales desde Firestore
+  isValidHexColor(color: string): boolean {
+    const hexRegex = /^#([0-9A-Fa-f]{6})$/; // Valida que sea un color hex de 6 caracteres
+    return hexRegex.test(color);
+  }
+  
   async loadNotes(): Promise<void> {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
@@ -24,23 +29,22 @@ export class NotaService {
     try {
       const notesQuery = query(
         collection(this.firestore, 'notes'),
-        where('uid', '==', currentUser.uid) // Filtrar por UID
+        where('uid', '==', currentUser.uid)
       );
   
-      const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(notesQuery);
+      const querySnapshot = await getDocs(notesQuery);
+      const notes = querySnapshot.docs.map(doc => ({
+        noteId: doc.id, // Asegúrate de asignar el ID del documento
+        ...doc.data(), // Combina los datos restantes
+      })) as Note[];
   
-      const notes = querySnapshot.docs.map(doc => {
-        const data = doc.data() as Note; // Tipar los datos como 'Note'
-        const { noteId, ...rest } = data; // Eliminar cualquier propiedad 'noteId' existente
-        return { noteId: doc.id, ...rest }; // Asignar 'doc.id' a 'noteId'
-      });
-  
-      this.notesSubject.next(notes); // Actualiza el BehaviorSubject con las nuevas notas
+      this.notesSubject.next(notes); // Actualiza el BehaviorSubject
     } catch (error) {
       console.error('Error al cargar las notas:', error);
       throw error;
     }
   }
+  
   
   
 
@@ -59,38 +63,49 @@ export class NotaService {
     if (!currentUser) {
       throw new Error('No hay usuario autenticado');
     }
-
+  
     try {
+      // Valida el color antes de guardar
+      if (!this.isValidHexColor(note.color)) {
+        note.color = '#ffffff'; // Usa un color predeterminado si es inválido
+      }
+  
       const noteWithUid = { ...note, uid: currentUser.uid };
       const docRef = await addDoc(collection(this.firestore, 'notes'), noteWithUid);
-      const addedNote = { ...noteWithUid, id: docRef.id }; // Incluye el ID del documento en la nota
-      const updatedNotes = [...this.notesSubject.getValue(), addedNote]; // Agrega la nueva nota al BehaviorSubject
-      this.notesSubject.next(updatedNotes); // Actualiza el observable
-      console.log('Nota añadida:', addedNote);
+      const addedNote = { ...noteWithUid, noteId: docRef.id }; // Asegura que tenga un ID
+      const updatedNotes = [...this.notesSubject.getValue(), addedNote];
+      this.notesSubject.next(updatedNotes);
     } catch (error) {
       console.error('Error al añadir la nota:', error);
       throw error;
     }
   }
+  
+  
 
   // Eliminar una nota usando su ID
   async deleteNote(noteId: string): Promise<void> {
-    try {
-      // Eliminar la nota de Firestore
-      await deleteDoc(doc(this.firestore, 'notes', noteId));
+    if (!noteId) {
+      console.error('El ID de la nota es inválido o undefined.');
+      return;
+    }
   
-      // Actualizar el BehaviorSubject eliminando la nota por 'noteId'
+    try {
+      const docRef = doc(this.firestore, 'notes', noteId); // Construye la referencia
+      await deleteDoc(docRef); // Elimina el documento de Firestore
+      console.log(`Documento con ID ${noteId} eliminado correctamente.`);
+  
+      // Actualiza el BehaviorSubject para reflejar el cambio
       const updatedNotes = this.notesSubject
         .getValue()
-        .filter(note => note.noteId !== noteId); // Comparar correctamente el 'noteId'
-  
-      this.notesSubject.next(updatedNotes); // Actualizar el observable
-      console.log(`Nota ${noteId} eliminada`);
+        .filter(note => note.noteId !== noteId); // Filtra correctamente las notas
+      this.notesSubject.next(updatedNotes);
     } catch (error) {
       console.error('Error al eliminar la nota:', error);
       throw error;
     }
   }
+  
   
   
 }

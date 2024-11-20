@@ -7,6 +7,9 @@ import { addIcons } from 'ionicons/';
 import { NoteDetailComponent } from '../note-detail/note-detail.component';
 import { Note } from '../Interfaces/note';
 
+
+
+
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -15,7 +18,7 @@ import { Note } from '../Interfaces/note';
   imports: [
     NoteDetailComponent, IonHeader, IonToolbar, IonTitle, IonContent, 
     IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, 
-    IonCardContent, IonButton, IonIcon, NgFor, NgIf, NgStyle
+    IonCardContent, IonButton, IonIcon, NgFor, NgIf, NgStyle,
   ],
 })
 export class Tab1Page implements OnInit {
@@ -51,18 +54,22 @@ export class Tab1Page implements OnInit {
   }
 
   deleteNote(index: number) {
-    const noteID = this.notes[index].noteId; // Obtener el ID de la nota desde la lista local
+    if (index < 0 || index >= this.notes.length) {
+      console.error('Índice fuera de rango:', index);
+      return;
+    }
+  
+    const noteID = this.notes[index]?.noteId;
+    if (!noteID) {
+      console.error('No se encontró un ID válido para la nota en la posición:', index);
+      return;
+    }
   
     this.noteService.deleteNote(noteID)
-      .then(() => {
-        console.log(`Nota ${noteID} eliminada`);
-        // Ya no es necesario actualizar 'notes' manualmente, 
-        // ya que el servicio lo hace mediante el BehaviorSubject
-      })
-      .catch(error => {
-        console.error('Error al eliminar la nota:', error);
-      });
+      .then(() => console.log(`Nota ${noteID} eliminada correctamente.`))
+      .catch(error => console.error('Error al eliminar la nota:', error));
   }
+  
   
   
 }

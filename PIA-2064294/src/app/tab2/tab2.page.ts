@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { IonHeader,IonTitle,IonToolbar,IonContent,IonCard,IonCardHeader,IonCardTitle,IonCardContent,IonItem,IonInput,IonLabel,IonTextarea,IonSelect,IonSelectOption,IonButton} from '@ionic/angular/standalone'; // Importa el módulo completo
 import { NotaService } from '../nota.service';
 import { Note } from '../Interfaces/note';
 import { FotoServiceService } from '../foto-service.service'; // Importa el servicio FotoService
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-tab2',
@@ -12,9 +13,10 @@ import { FotoServiceService } from '../foto-service.service'; // Importa el serv
   styleUrls: ['tab2.page.scss'],
   standalone: true,
   imports: [
-    IonicModule, 
     CommonModule,
     ReactiveFormsModule,
+    IonHeader,IonTitle,IonToolbar,IonContent,IonCard,IonCardHeader,IonCardTitle,IonCardContent,IonItem,IonInput,IonLabel,IonTextarea,
+    IonSelect,IonSelectOption,NgIf,IonButton// Usa IonicModule para incluir todos los componentes de Ionic
   ],
 })
 export class Tab2Page {

@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
+import { IonHeader,IonToolbar,IonTitle,IonButtons,IonButton,IonIcon,IonContent,IonCard,IonCardHeader,IonCardTitle,IonCardContent,IonItem,IonLabel,IonInput} from '@ionic/angular/standalone';
 @Component({
   selector: 'app-iniciar-sesion',
   templateUrl: './iniciar-sesion.component.html',
   styleUrls: ['./iniciar-sesion.component.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule],
+  imports: [ ReactiveFormsModule,IonTitle ,IonHeader,IonToolbar,IonButtons,IonButton,IonIcon,IonContent,IonCard,IonCardHeader,IonCardTitle,IonCardContent,IonItem,IonLabel,IonInput],
 })
 export class IniciarSesionComponent {
   loginForm: FormGroup;

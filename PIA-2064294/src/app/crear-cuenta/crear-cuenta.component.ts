@@ -4,16 +4,16 @@ import { User } from '../Interfaces/user';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
-import { IonicModule } from '@ionic/angular';
 import { NgIf } from '@angular/common';
 import { FotoServiceService } from '../foto-service.service';
+import { IonHeader,IonTitle,IonToolbar,IonButtons,IonButton,IonIcon,IonContent,IonCard,IonCardHeader,IonCardTitle,IonCardContent,IonItem,IonLabel,IonInput} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-crear-cuenta',
   templateUrl: './crear-cuenta.component.html',
   styleUrls: ['./crear-cuenta.component.scss'],
   standalone: true,
- imports:[NgIf,IonicModule, ReactiveFormsModule]
+ imports:[NgIf,IonTitle,ReactiveFormsModule,IonHeader,IonToolbar,IonButtons,IonButton,IonIcon,IonContent,IonCard,IonCardHeader,IonCardTitle,IonCardContent,IonItem,IonLabel,IonInput]
 })
 export class CrearCuentaComponent implements OnInit {
   registerForm!: FormGroup;
